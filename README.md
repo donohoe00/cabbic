@@ -46,12 +46,16 @@ described in api.h, to interact with the T48.
 reside in apps/probeit.c.  Type 'make APP=probeit' to build the the 'probeit'
 executable.
 
+### USB permissions
+
 The app will communicate with the T48 via libusb.  However, by default,
 regular users won't have permission to access the device.  Either run the
 app as root (e.g. via sudo), or (much more preferably) run udevperm.bash (
 which was tested on Ubuntu 22.04) to grant permission to regular users to
 access the device.  You can edit the .rules file in the udev folder beforehand,
 for example if you only want to grant access to the device to a specific user.
+
+### Applications
 
 What kind of applications could potentially be created with CABBiC?
 
