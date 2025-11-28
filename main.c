@@ -449,8 +449,10 @@ cab_reset(uint8_t *gnd_pins, int ngnd, uint8_t *vcc_pins, int nvcc,
         return err;
     }
 
-    if ((err = set_vpp_pins(vpp_pins, nvpp, vpp_voltage)) != CAB_ERR_NONE) {
-        return err;
+    if (vpp_pins && nvpp > 0) {
+        if ((err = set_vpp_pins(vpp_pins, nvpp, vpp_voltage)) != CAB_ERR_NONE) {
+            return err;
+        }
     }
 
     for (int i = 0; i < sizeof io_pin_modes / sizeof io_pin_modes[0]; i++) {
