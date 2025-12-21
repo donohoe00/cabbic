@@ -67,6 +67,9 @@ cab_sterror(cab_err_e err)
         case CAB_ERR_FILE:
             return "FILE Access Error";
             break;
+        case CAB_ERR_IO:
+            return "Input/Output Error";
+            break;
         default:
             return "Unknown Error";
             break;

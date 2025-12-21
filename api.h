@@ -24,10 +24,17 @@ typedef enum {
     CAB_ERR_OVERCURRENT     = 5,
     CAB_ERR_BAD_ARGS        = 6,
     CAB_ERR_FILE            = 7,
+    CAB_ERR_IO              = 8,
 } cab_err_e;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Main application entry point
 cab_err_e app_run(int argc, char **argv);
+
+const char * cab_sterror(cab_err_e err);
 
 // The remaining functions may be called by the application
 cab_err_e cab_reset(uint8_t *gnd_pins, int ngnd, uint8_t *vcc_pins, int nvcc,
@@ -72,3 +79,7 @@ cab_err_e cab_io_hold_off();
 // values:   Array of length 'npins', specifying the values which were read
 //           from the corresponding pins (values will be either 0 or 1).
 cab_err_e cab_io_read(uint8_t *pins, uint8_t *values, int npins);
+
+#ifdef __cplusplus
+};
+#endif
