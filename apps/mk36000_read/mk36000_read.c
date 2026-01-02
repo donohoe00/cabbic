@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <api.h>
+#include <cabbic/api.h>
 
 #define T48_NPINS   40
 #define ROM_NPINS   24

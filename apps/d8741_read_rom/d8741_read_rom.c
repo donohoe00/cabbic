@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <api.h>
+#include <cabbic/api.h>
 
 // Use the max. T48 VPP voltage of 25V.  This results in 22V supplied to the
 // EA pin.  The D8741 datasheet calls for 23V, but it seems to work fine, at

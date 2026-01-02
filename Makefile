@@ -4,24 +4,23 @@
 #
 APP ?= dummy
 
-DEPS = api.h Makefile
-CFLAGS = -Wall -Ilib
+DEPS = inc/cabbic/api.h Makefile
+CFLAGS = -Wall -Ilib -Iinc
 LD=cc
 
-OBJS = main.o apps/$(APP).o
+VPATH=apps/$(APP)
 
-ifeq ($(APP), si5351_gen_clock)
-OBJS += lib/si5351.o
-LD=c++
-endif
+OBJS = main.o apps/$(APP)/$(APP).o
+
+include apps/$(APP)/app.mk
 
 $(APP): $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $^ -lusb-1.0
 
-apps/%.o: apps/%.c $(DEPS)
+apps/$(APP)/%.o: apps/$(APP)/%.c $(DEPS)
 	cc -c -I. $(CFLAGS) -o $@ $<
 
-apps/%.o: apps/%.cpp $(DEPS)
+apps/$(APP)/%.o: apps/$(APP)/%.cpp $(DEPS)
 	cc -c -I. $(CFLAGS) -o $@ $<
 
 lib/%.o: lib/%.cpp $(DEPS)
@@ -31,4 +30,4 @@ main.o: main.c $(DEPS)
 	cc -c -I. -I/usr/include/libusb-1.0 $(CFLAGS) -o $@ $<
 
 clean:
-	rm -f apps/*.o $(OBJS)
+	rm -f apps/$(APP)/*.o $(OBJS)

@@ -3,14 +3,14 @@
 #include <string.h>
 #include <libusb.h>
 
-#include "api.h"
+#include <cabbic/api.h>
 
 #define T48_USB_VID 0xA466
 #define T48_USB_PID 0x0A53
 #define T48_DEVTYPE 7
 
 // 40 ZIF pins plus 16 on front-facing jumper connector
-#define T48_MAX_PINS        40
+#define T48_MAX_PINS        56
 
 #define T48_CMD_QUERY       0x00
 #define T48_CONFIG_AND_READ 0x28
@@ -314,6 +314,22 @@ set_vpp_pins(uint8_t *pins, int npins, float voltage)
         { 1, 1, 5 },    // 38
         { 1, 1, 6 },    // 39
         { 1, 1, 7 },    // 40
+        { 1, 4, 0 },    // 41
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
     };
 
     cab_err_e err;
@@ -369,6 +385,22 @@ set_vcc_pins(uint8_t *pins, int npins, float voltage)
         { 1, 3, 5 },    // 38
         { 1, 3, 6 },    // 39
         { 1, 3, 7 },    // 40
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 1, 8, 0 },    // 53
+        { 1, 8, 1 },    // 54
+        { 0, 0, 0 },
+        { 0, 0, 0 },
     };
 
     const float vcc_min = 1.8, vcc_max = 6.5;
@@ -428,6 +460,22 @@ set_gnd_pins(uint8_t *pins, int npins)
         { 1, 3, 2 },    // 38
         { 1, 3, 1 },    // 39
         { 1, 3, 0 },    // 40
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 1, 8, 0 },    // 46
+        { 0, 0, 0 },
+        { 1, 8, 1 },    // 48
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 0, 0, 0 },
+        { 1, 8, 2 },    // 56
     };
 
     return set_pins(pins, npins, 0, pin_info, T48_SET_GND_PINS, "GND");
@@ -485,6 +533,10 @@ cab_io_pullup(bool enabled)
     return CAB_ERR_NONE;
 }
 
+// The message we use to configure and read pins only works for pins 1-40.
+// Therefore, only pins 1-40 can be used for GPIOs.  We can still use pins
+// 41-56 (the pins on the jumper connector at the front of the unit) for VPP,
+// VCC and GND, however.
 static int
 config_and_read(bool pullup, uint8_t *pins, uint8_t *values, int npins)
 {
@@ -496,10 +548,10 @@ config_and_read(bool pullup, uint8_t *pins, uint8_t *values, int npins)
     // this call.
     msg[0] = T48_CONFIG_AND_READ;
     msg[1] = pullup ? 0x80 : 0;
-    msg[2] = T48_MAX_PINS;
+    msg[2] = 40;
     msg[4] = 1;
 
-    for (int i = 0; i < T48_MAX_PINS; i++) {
+    for (int i = 0; i < 40; i++) {
         msg[8 + (i>>1)] |= (io_pin_modes[i] & 0xf) << ((i&1) ? 4 : 0);
     }
 
